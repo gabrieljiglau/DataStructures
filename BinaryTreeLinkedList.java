@@ -1,9 +1,6 @@
 package trees;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class BinaryTreeLinkedList extends BinaryNode {
     private BinaryNode rootNode;
@@ -24,6 +21,54 @@ public class BinaryTreeLinkedList extends BinaryNode {
 
     public void setRootNode(BinaryNode rootNode) {
         this.rootNode = rootNode;
+    }
+
+    public int getNumberOfBinaryTreeTopologiesIteratively(int n){
+
+        int[] array = new int[n -1];
+        array[0] = 1;
+        int topologies;
+
+        for(int m = 0; m <= n; m++){
+            topologies = 0;
+            for(int left = 0; left < m; left ++){
+                int right = m -1 -left;
+                int leftTopologies = array[left];
+                int rightTopologies = array[right];
+
+                topologies = leftTopologies * rightTopologies;
+            }
+
+            array[m] = topologies;
+        }
+
+        return array[n];
+    }
+
+    public int getNumberOfBinaryTreeTopologies(int numberOfNodes,int []array){
+
+        Arrays.fill(array,-1);
+        array[0] = 1;
+        array[1] = 1;
+        array[2] = 2;
+        array[3] = 5;
+
+        if(array[numberOfNodes] != -1){
+            return array[numberOfNodes];
+        }
+
+        int topologies = 0;
+        for(int left = 0; left < numberOfNodes; left++){
+           int right = numberOfNodes -1 - left;
+
+           int leftTopologies = getNumberOfBinaryTreeTopologies(left,array);
+           int rightTopologies = getNumberOfBinaryTreeTopologies(right,array);
+
+           topologies += leftTopologies * rightTopologies;
+       }
+
+        array[numberOfNodes] = topologies;
+        return topologies;
     }
 
     public void preOrder(BinaryNode node){
@@ -62,6 +107,71 @@ public class BinaryTreeLinkedList extends BinaryNode {
         for(Integer i : list){
             System.out.println(list.get(i));
         }
+    }
+
+    private BinaryNode getParent(BinaryNode node) {
+
+        return null;
+    }
+
+    public void inOrderIteratively(BinaryNode node){
+
+        BinaryNode current = node;
+        BinaryNode previous = null;
+        BinaryNode next = null;
+
+        while(current != null){
+
+            if (previous == null || getParent(node) == null) {
+                if (node.getLeftChild() != null) {
+                     next = current.getLeftChild();
+                } else {
+                    System.out.println(current.getData());
+
+                    if(current.getRightChild() != null) {
+                        next = current.getRightChild();
+                    } else {
+                        next = getParent(current);
+                    }
+                }
+            } else if (previous == current.getLeftChild()) {
+                System.out.println(current.getData());
+                if (current.getRightChild() != null) {
+                    next = current.getRightChild();
+                } else {
+                    next = getParent(current);
+                }
+            } else if(previous == current.getRightChild()){
+                next = getParent(current);
+            }
+
+            previous = current;
+            current = next;
+        }
+    }
+
+    private BinaryNode getRightMostNode(BinaryNode n){
+        while(n != null){
+            if(n.getRightChild() != null){
+                n = n.getRightChild();
+            } else {
+                return n;
+            }
+        }
+
+        return n;
+    }
+
+    private BinaryNode getLeftMostNode(BinaryNode n){
+        while(n != null){
+            if(n.getLeftChild() != null){
+                n = n.getLeftChild();
+            } else {
+                return n;
+            }
+        }
+
+        return n;
     }
 
     public void inOrder(BinaryNode node){
