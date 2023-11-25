@@ -1,2 +1,1 @@
-# Implementation of some Data Structures
-and some coding problems
+# good to know algorithm and some data structures
